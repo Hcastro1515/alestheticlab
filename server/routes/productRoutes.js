@@ -1,10 +1,9 @@
 import express from 'express';
-import { body, validationResult } from 'express-validator';
-import product from '../models/product.js';
-
+import { body } from 'express-validator';
+import { addproduct, deleteProduct, getProductById, getProducts } from '../controllers/productController.js';
 
 const productsRouter = express.Router();
-
+// Add Product to database
 productsRouter.post('/add',
   [
     body('name').notEmpty().withMessage('Product Name is Required'),
@@ -15,37 +14,14 @@ productsRouter.post('/add',
     body('category').notEmpty().withMessage('Category is required'),
     body('brand').notEmpty().withMessage('Brand is required')
   ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+  addproduct
+);
 
-    const { name, description, quantity, price, expiryDate, category, brand } = req.body;
+productsRouter.get('/', getProducts);
 
-    try {
-      const productExists = await product.findOne({ name, brand });
-      console.log(productExists);
-      if (productExists) {
-        return res.status(404).json({ message: "Product is already in database" });
-      }
-      product.create({
-        name,
-        description,
-        quantity,
-        price,
-        expiryDate,
-        category,
-        brand
-      })
-      return res.status(200).json({ message: "Product was successfully added" });
+productsRouter.get('/:id', getProductById);
 
-      // Rest of your code
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: "Server Error" });
-    }
-  });
+productsRouter.delete('/:id', deleteProduct);
 
 export default productsRouter;
 

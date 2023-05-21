@@ -1,0 +1,107 @@
+import { validationResult } from 'express-validator';
+import asyncHandler from 'express-async-handler';
+import product from '../models/product.js';
+
+const addproduct = asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { name, description, quantity, price, expiryDate, category, brand } = req.body;
+
+  try {
+    const productExists = await product.findOne({ name, brand });
+
+    if (productExists) {
+      return res.status(404).json({ message: "Product is already in database" });
+    }
+    product.create({
+      name,
+      description,
+      quantity,
+      price,
+      expiryDate,
+      category,
+      brand
+    })
+    return res.status(200).json({ message: "Product was successfully added" });
+
+    // Rest of your code
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+//Get all products 
+const getProducts = asyncHandler(async (req, res) => {
+  try {
+    const products = await product.find();
+
+    if (!products || products.length === 0) {
+      res.status(404).json({
+        message: "No products found",
+      });
+    } else {
+      res.status(200).json({
+        message: "Products retrieved successfully",
+        data: products
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "An error occurred while retrieving the products",
+    });
+  }
+});
+
+const getProductById = asyncHandler(async (req, res) => {
+  try {
+    const singleProduct = await product.findOne({ _id: req.params.id });
+
+    if (!singleProduct) {
+      res.status(404).json({
+        message: "Product not found"
+      });
+    } else {
+      res.status(200).json({
+        message: "Product was retrieve successfully",
+        data: singleProduct
+      })
+    }
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Ann error occurred trying to retrieve the product",
+    });
+  }
+});
+
+const deleteProduct = asyncHandler(async (req, res) => {
+  try {
+    const singleProduct = await product.deleteOne({ _id: req.params.id });
+
+    if (singleProduct.deletedCount === 0) {
+      return res.status(404).json({
+        message: "Product not found"
+      });
+    }
+    res.status(200).json({
+      message: "Product deleted successfully"
+    });
+  } catch (error) {
+    res.status(500).join({
+      message: "There was an error deleting the product",
+    });
+  }
+});
+
+export {
+  addproduct,
+  getProducts,
+  getProductById,
+  deleteProduct
+}
