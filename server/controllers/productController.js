@@ -2,6 +2,7 @@ import { validationResult } from 'express-validator';
 import asyncHandler from 'express-async-handler';
 import product from '../models/product.js';
 
+//Add product
 const addproduct = asyncHandler(async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -57,6 +58,7 @@ const getProducts = asyncHandler(async (req, res) => {
   }
 });
 
+//Get product by ID 
 const getProductById = asyncHandler(async (req, res) => {
   try {
     const singleProduct = await product.findOne({ _id: req.params.id });
@@ -80,6 +82,30 @@ const getProductById = asyncHandler(async (req, res) => {
   }
 });
 
+//Update product
+const updateProductById = asyncHandler(async (req, res) => {
+  try {
+    const _product = await product.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true });
+
+    if (!_product) {
+      res.status(404).json({
+        message: "Product not found"
+      });
+    } else {
+      res.status(200).json({
+        message: "Product was successfully updated",
+        data: _product
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "An error occurred while updating the product",
+    });
+  }
+});
+
+//Delete product
 const deleteProduct = asyncHandler(async (req, res) => {
   try {
     const singleProduct = await product.deleteOne({ _id: req.params.id });
@@ -93,8 +119,30 @@ const deleteProduct = asyncHandler(async (req, res) => {
       message: "Product deleted successfully"
     });
   } catch (error) {
-    res.status(500).join({
+    res.status(500).json({
       message: "There was an error deleting the product",
+    });
+  }
+});
+
+const deleteAllProducts = asyncHandler(async (req, res) => {
+  try {
+    console.log("Deleting all products");
+    const deleteResult = await product.deleteMany({});
+
+    if (deleteResult.deletedCount === 0) {
+      return res.status(404).json({
+        message: "No products found",
+      });
+    }
+    res.status(200).json({
+      message: `Successfully deleted all ${result.deletedCount} products.`,
+    });
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+      error: error,
+      message: "There was an error deleting the products",
     });
   }
 });
@@ -103,5 +151,7 @@ export {
   addproduct,
   getProducts,
   getProductById,
-  deleteProduct
+  deleteProduct,
+  updateProductById,
+  deleteAllProducts
 }
