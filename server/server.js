@@ -4,7 +4,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import mongoConnect from './config/db.js';
 import productsRouter from "./routes/productRoutes.js";
-
+import errorHandler from './middlewares/errorMiddleware.js';
 dotenv.config();
 mongoConnect();
 const app = express();
@@ -15,5 +15,6 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use('/api/products', productsRouter);
 
+app.use(errorHandler);
 
 app.listen(port, () => console.log(`Server is listening on port ${port}`));

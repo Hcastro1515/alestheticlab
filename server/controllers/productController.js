@@ -2,11 +2,12 @@ import { validationResult } from 'express-validator';
 import asyncHandler from 'express-async-handler';
 import product from '../models/product.js';
 
+
 //Add product
-const addproduct = asyncHandler(async (req, res) => {
+const addProduct = asyncHandler(async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    return next({ status: 400, errors: errors.array() });
   }
 
   const { name, description, quantity, price, expiryDate, category, brand } = req.body;
@@ -30,8 +31,7 @@ const addproduct = asyncHandler(async (req, res) => {
 
     // Rest of your code
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server Error" });
+    next(err)
   }
 });
 
@@ -148,7 +148,7 @@ const deleteAllProducts = asyncHandler(async (req, res) => {
 });
 
 export {
-  addproduct,
+  addProduct,
   getProducts,
   getProductById,
   deleteProduct,
