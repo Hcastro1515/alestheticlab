@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+import colors from 'tailwindcss/colors'
 export default {
   content: [
     "./index.html",
@@ -12,7 +13,11 @@ export default {
       'secondaryColor2': '#f5ebe0',
       'accent': '#d5bdaf',
     },
-    extend: {},
+    extend: {
+      colors: {
+        ...colors
+      }
+    },
   },
   plugins: [],
 }
