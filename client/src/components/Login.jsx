@@ -23,7 +23,10 @@ function Login() {
       <Formik
         initialValues={{ username: '', pin: '' }}
         validationSchema={loginSchema}
-        onSubmit={handleSubmit}
+        onSubmit={(values, actions) => {
+          handleSubmit(values, actions);
+          actions.resetForm();
+        }}
       >
         {({ isSubmitting, status }) => (
           <Form>
