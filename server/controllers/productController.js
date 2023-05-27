@@ -31,7 +31,7 @@ const addProduct = asyncHandler(async (req, res) => {
 
     // Rest of your code
   } catch (err) {
-    next(err)
+    next(err);
   }
 });
 

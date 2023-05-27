@@ -1,6 +1,6 @@
 import express from 'express';
 import { body } from 'express-validator';
-import { addproduct, deleteAllProducts, deleteProduct, getProductById, getProducts, updateProductById } from '../controllers/productController.js';
+import { addProduct, deleteAllProducts, deleteProduct, getProductById, getProducts, updateProductById } from '../controllers/productController.js';
 
 const productsRouter = express.Router();
 // Add Product to database
@@ -14,7 +14,7 @@ productsRouter.post('/add',
     body('category').notEmpty().withMessage('Category is required'),
     body('brand').notEmpty().withMessage('Brand is required')
   ],
-  addproduct
+  addProduct
 );
 
 productsRouter.get('/', getProducts);
