@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Login from './Login';
+import Register from './register'
 
 function LoginScreen() {
 
@@ -18,7 +19,7 @@ function LoginScreen() {
       </div>
 
       <div className=''>
-        {activeTab === 'login' ? <Login /> : 'Register'}
+        {activeTab === 'login' ? <Login /> : <Register />}
       </div>
     </div>
   )
