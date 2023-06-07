@@ -1,20 +1,27 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import CustomErrorMessage from "./customErrorMessage";
-import { Axios } from 'axios';
+import axios from 'axios';
 
 const loginSchema = Yup.object().shape({
   username: Yup.string().required(),
   pin: Yup.string().min(4, 'Too Small').max(8, 'Too Long').required(),
 });
 
-const handleSubmit = (values, { setSubmitting, setStatus }) => {
+const handleSubmit = async (values, { setSubmitting, setStatus }) => {
   // Simulate an API call
-  setTimeout(() => {
-    console.log(values);
+  try {
+    const response = await axios.get('http://localhost:3000/api/user/login', values);
+
+    console.log(response.data);
+    localStorage.setItem('token', response.data.token);
     setStatus({ success: true });
+  } catch (error) {
+    console.log(error);
+    setStatus({ success: false });
+  } finally {
     setSubmitting(false);
-  }, 500);
+  }
 };
 
 function Login() {
@@ -37,7 +44,7 @@ function Login() {
             <Field type="text" name="pin" placeholder="PIN" />
             <ErrorMessage name="pin" component={CustomErrorMessage} />
 
-            <button className='py-2 px-4 bg-secondaryColor1 rounded-md hover:bg-secondaryColor2 transition duration-500 ease-in-out' disabled={isSubmitting}>
+            <button type="submit" className='py-2 px-4 bg-secondaryColor1 rounded-md hover:bg-secondaryColor2 transition duration-500 ease-in-out' disabled={isSubmitting}>
               Log In
             </button>
             {status && status.success && <div>Login successfull</div>}

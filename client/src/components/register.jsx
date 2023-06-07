@@ -51,7 +51,7 @@ function Register() {
             <button type="submit" className='py-2 px-4 bg-secondaryColor1 rounded-md hover:bg-secondaryColor2 transition duration-500 ease-in-out' disabled={isSubmitting}>
               Register
             </button>
-            {status && status.success && <div>Login successfull</div>}
+            {status && status.success && <div>User registration is successfull</div>}
           </Form>
         )}
       </Formik>
