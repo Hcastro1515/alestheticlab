@@ -13,7 +13,7 @@ userRouter.post('/register', [
   registerUser
 );
 
-userRouter.get('/login', [
+userRouter.post('/login', [
   body('username').notEmpty().withMessage('username is Required'),
   body('pin').notEmpty().withMessage('Pin is required')
 ],
